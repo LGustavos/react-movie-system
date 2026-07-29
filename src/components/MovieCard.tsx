@@ -1,0 +1,105 @@
+'use client';
+
+import Image from 'next/image';
+import Link from 'next/link';
+import { useFavorites } from '@/contexts/FavoritesContext';
+import { buildImageUrl } from '@/services/tmdb';
+import type { FavoriteMovie, Movie } from '@/types/movie';
+import { HeartIcon, TrashIcon } from './icons';
+import { HighlightText } from './HighlightText';
+
+type CardMovie = Movie | FavoriteMovie;
+
+interface MovieCardProps {
+  movie: CardMovie;
+  /** Termo a destacar no titulo (usado na pagina de busca). */
+  highlight?: string;
+  /**
+   * "favorite" (default): botao de coracao no canto direito.
+   * "remove": lixeira no canto direito (usado na pagina de Favoritos).
+   */
+  actionVariant?: 'favorite' | 'remove';
+}
+
+export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: MovieCardProps) {
+  const { isFavorite, toggleFavorite, removeFavorite } = useFavorites();
+  const favorited = isFavorite(movie.id);
+  const poster = buildImageUrl(movie.poster_path, 'w300');
+  const year = movie.release_date ? movie.release_date.slice(0, 4) : null;
+
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (actionVariant === 'remove') {
+      removeFavorite(movie.id);
+    } else {
+      toggleFavorite(movie);
+    }
+  };
+
+  const actionAriaLabel =
+    actionVariant === 'remove'
+      ? `Remover ${movie.title} dos favoritos`
+      : favorited
+        ? `Remover ${movie.title} dos favoritos`
+        : `Adicionar ${movie.title} aos favoritos`;
+
+  return (
+    <article className="group relative overflow-hidden rounded-xl bg-surface-800/80 shadow-card ring-1 ring-white/5 transition hover:ring-brand-500/50">
+      <Link
+        href={`/movie/${movie.id}`}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        aria-label={`Ver detalhes de ${movie.title}`}
+      >
+        <div className="relative aspect-[2/3] w-full bg-surface-700/60">
+          {poster ? (
+            <Image
+              src={poster}
+              alt={`Poster de ${movie.title}`}
+              fill
+              sizes="(min-width: 1280px) 16vw, (min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+              className="object-cover transition duration-300 group-hover:scale-[1.03]"
+              unoptimized
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-xs text-slate-500">
+              Sem poster
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-2 p-3">
+          <h3
+            className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-tight text-slate-100"
+            title={movie.title}
+          >
+            <HighlightText text={movie.title} highlight={highlight} />
+          </h3>
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent-500/90 px-2 py-0.5 font-semibold text-surface-950">
+              {movie.vote_average.toFixed(1)}
+            </span>
+            {year && <span>{year}</span>}
+          </div>
+        </div>
+      </Link>
+
+      <button
+        type="button"
+        onClick={handleActionClick}
+        aria-label={actionAriaLabel}
+        aria-pressed={actionVariant === 'favorite' ? favorited : undefined}
+        className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+      >
+        {actionVariant === 'remove' ? (
+          <TrashIcon className="h-4 w-4" />
+        ) : (
+          <HeartIcon
+            filled={favorited}
+            className={`h-4 w-4 ${favorited ? 'text-red-500' : 'text-white'}`}
+          />
+        )}
+      </button>
+    </article>
+  );
+}
