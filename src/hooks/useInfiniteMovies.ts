@@ -33,12 +33,9 @@ const INITIAL: State = {
 export function useInfiniteMovies(fetcher: Fetcher, key: string, enabled = true) {
   const [state, setState] = useState<State>(INITIAL);
   const requestId = useRef(0);
-  const inFlight = useRef(false);
 
   const loadPage = useCallback(
     async (nextPage: number) => {
-      if (inFlight.current) return;
-      inFlight.current = true;
       const myId = ++requestId.current;
 
       setState((s) => ({
@@ -64,8 +61,6 @@ export function useInfiniteMovies(fetcher: Fetcher, key: string, enabled = true)
         if (myId !== requestId.current) return;
         const message = err instanceof Error ? err.message : 'Falha ao carregar filmes.';
         setState((s) => ({ ...s, loading: false, loadingMore: false, error: message }));
-      } finally {
-        inFlight.current = false;
       }
     },
     [fetcher],
