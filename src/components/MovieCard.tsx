@@ -87,11 +87,8 @@ export function MovieCard({
         </div>
 
         <div className="flex flex-1 flex-col gap-2 p-3">
-          {/*
-           * Altura travada em exatamente 2 linhas (leading-5 x 2 = h-10): com
-           * min-height um titulo longo empurrava o badge e vazava do card.
-           * O titulo completo continua no atributo `title`.
-           */}
+          {/* Altura travada em 2 linhas (leading-5 x 2 = h-10): com min-height
+              um titulo longo empurrava o badge e vazava do card. */}
           <h3
             className="line-clamp-2 h-10 overflow-hidden break-words text-sm font-semibold leading-5 text-slate-100"
             title={movie.title}

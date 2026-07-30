@@ -1,25 +1,25 @@
 export default function Loading() {
   return (
-    <div role="status" aria-live="polite" className="mx-auto max-w-7xl animate-pulse">
+    <div role="status" aria-live="polite" className="mx-auto max-w-7xl">
       {/* Reserva a altura do breadcrumb para o conteudo nao pular ao carregar. */}
-      <div className="mb-4 h-5 w-48 rounded bg-surface-800/70" />
+      <div className="skeleton mb-4 h-5 w-48 rounded" />
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
-        <div className="aspect-video w-full rounded-2xl bg-surface-800/60" />
+        <div className="skeleton aspect-video w-full rounded-2xl" />
         <div className="space-y-5">
-          <div className="h-9 w-3/4 rounded bg-surface-800/70" />
-          <div className="h-4 w-1/2 rounded bg-surface-800/60" />
+          <div className="skeleton h-9 w-3/4 rounded" />
+          <div className="skeleton h-4 w-1/2 rounded" />
           <div className="flex gap-2">
-            <div className="h-6 w-16 rounded-full bg-surface-800/70" />
-            <div className="h-6 w-20 rounded-full bg-surface-800/70" />
-            <div className="h-6 w-14 rounded-full bg-surface-800/70" />
+            <div className="skeleton h-6 w-16 rounded-full" />
+            <div className="skeleton h-6 w-20 rounded-full" />
+            <div className="skeleton h-6 w-14 rounded-full" />
           </div>
           <div className="space-y-2">
-            <div className="h-4 w-full rounded bg-surface-800/60" />
-            <div className="h-4 w-full rounded bg-surface-800/60" />
-            <div className="h-4 w-2/3 rounded bg-surface-800/60" />
+            <div className="skeleton h-4 w-full rounded" />
+            <div className="skeleton h-4 w-full rounded" />
+            <div className="skeleton h-4 w-2/3 rounded" />
           </div>
-          <div className="h-10 w-56 rounded-lg bg-surface-800/70" />
+          <div className="skeleton h-10 w-56 rounded-lg" />
         </div>
       </div>
 

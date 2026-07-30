@@ -20,8 +20,7 @@ export function BackBreadcrumb({ current }: BackBreadcrumbProps) {
     if (window.history.length <= 1) return;
 
     e.preventDefault();
-    // Volta de onde o usuario veio - busca ou favoritos - preservando o termo
-    // buscado e a posicao do scroll, o que um link fixo para a home perderia.
+    // Preserva o termo buscado e o scroll, que um link fixo para a home perderia.
     router.back();
   };
 

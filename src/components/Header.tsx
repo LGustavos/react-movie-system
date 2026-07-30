@@ -44,7 +44,6 @@ export function Header() {
       if (term === lastNavigatedRef.current) return;
       lastNavigatedRef.current = term;
 
-      // Apagar o termo devolve o usuario para a home.
       if (!term) {
         if (pathnameRef.current === '/search') router.replace('/');
         return;
@@ -59,7 +58,6 @@ export function Header() {
     [router],
   );
 
-  // Busca automatica quando o usuario para de digitar.
   useEffect(() => {
     navigate(debouncedQuery.trim());
   }, [debouncedQuery, navigate]);
@@ -71,12 +69,10 @@ export function Header() {
     setQuery(urlQuery);
   }, [pathname, urlQuery]);
 
-  // Fecha o menu mobile ao trocar de rota (inclusive pela busca).
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Esc fecha o menu, como esperado de um overlay.
   useEffect(() => {
     if (!menuOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -98,10 +94,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-surface-950/80 backdrop-blur">
       <div className="container-page">
-        {/*
-         * No mobile a linha quebra: logo + hamburguer em cima, busca ocupando
-         * a largura toda embaixo. A partir de md volta a ser uma linha so.
-         */}
+        {/* No mobile a linha quebra: logo + hamburguer em cima, busca embaixo. */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 md:h-16 md:flex-nowrap md:gap-4 md:py-0">
           <Link
             href="/"
