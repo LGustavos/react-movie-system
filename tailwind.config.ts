@@ -23,6 +23,10 @@ const config: Config = {
           400: '#fbbf24',
           500: '#f59e0b',
         },
+        /** Roxo/lilas da claquete da marca. */
+        lilac: {
+          400: '#a78bfa',
+        },
       },
       boxShadow: {
         card: '0 4px 20px rgba(0, 0, 0, 0.35)',
