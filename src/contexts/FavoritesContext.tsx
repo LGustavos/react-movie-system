@@ -70,10 +70,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     }
   }, [favorites, hydrated]);
 
-  const isFavorite = useCallback(
-    (id: number) => favorites.some((m) => m.id === id),
-    [favorites],
-  );
+  const favoriteIds = useMemo(() => new Set(favorites.map((m) => m.id)), [favorites]);
+
+  const isFavorite = useCallback((id: number) => favoriteIds.has(id), [favoriteIds]);
 
   const addFavorite = useCallback((movie: Movie | FavoriteMovie) => {
     setFavorites((prev) => (prev.some((m) => m.id === movie.id) ? prev : [...prev, toFavorite(movie)]));
