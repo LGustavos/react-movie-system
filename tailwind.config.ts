@@ -6,9 +6,13 @@ const config: Config = {
     extend: {
       colors: {
         surface: {
-          950: '#0b1220',
-          900: '#111827',
-          800: '#1f2937',
+          /** Header e faixas mais profundas. */
+          950: '#0e1626',
+          /** Fundo da pagina. */
+          900: '#141d2f',
+          /** Cards, inputs e selects. */
+          800: '#1c2537',
+          /** Placeholders de imagem. */
           700: '#334155',
         },
         brand: {
