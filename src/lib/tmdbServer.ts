@@ -12,13 +12,13 @@ export const TMDB_TOKEN = process.env.TMDB_TOKEN ?? '';
 export function assertTmdbToken(): void {
   if (!TMDB_TOKEN) {
     throw new Error(
-      'TMDB_TOKEN nao configurado. Copie .env.example para .env.local e preencha o token.',
+      'TMDB_TOKEN não configurado. Copie .env.example para .env.local e preencha o token.',
     );
   }
 }
 
 export class TmdbNotFoundError extends Error {
-  constructor(message = 'Filme nao encontrado.') {
+  constructor(message = 'Filme não encontrado.') {
     super(message);
     this.name = 'TmdbNotFoundError';
   }

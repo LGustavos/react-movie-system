@@ -16,7 +16,7 @@ http.interceptors.response.use(
     const message =
       error.response?.data?.error ??
       error.message ??
-      'Nao foi possivel comunicar com o servico de filmes.';
+      'Não foi possível comunicar com o serviço de filmes.';
     return Promise.reject(new Error(message));
   },
 );
