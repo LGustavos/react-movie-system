@@ -59,7 +59,6 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
               fill
               sizes="(min-width: 1280px) 16vw, (min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
               className="object-cover transition duration-300 group-hover:scale-[1.03]"
-              unoptimized
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-xs text-slate-500">
