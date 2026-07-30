@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Suspense, type ReactNode } from 'react';
+import { AuroraBackground } from '@/components/AuroraBackground';
 import { Header } from '@/components/Header';
 import { FavoritesProvider } from '@/contexts/FavoritesContext';
 import './globals.css';
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR" className={inter.variable}>
       <body className="font-sans">
+        <AuroraBackground />
         <FavoritesProvider>
           <Suspense fallback={null}>
             <Header />

@@ -38,7 +38,7 @@ export default function FavoritesPage() {
     return (
       <section className="space-y-6">
         <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl">Meus Filmes Favoritos</h1>
-        <div className="h-40 animate-pulse rounded-xl bg-surface-800/50" />
+        <div className="skeleton h-40 rounded-xl" />
       </section>
     );
   }
