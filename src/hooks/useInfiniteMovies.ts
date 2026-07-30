@@ -67,11 +67,20 @@ export function useInfiniteMovies(fetcher: Fetcher, key: string, enabled = true)
   );
 
   useEffect(() => {
-    setState(INITIAL);
     if (!enabled) {
-      setState((s) => ({ ...s, loading: false }));
+      setState({ ...INITIAL, loading: false });
       return;
     }
+    // Mantem a lista anterior montada enquanto a nova key carrega: na busca com
+    // debounce isso evita o skeleton piscando a cada pausa na digitacao.
+    setState((s) => ({
+      ...s,
+      page: 0,
+      totalPages: 1,
+      loading: true,
+      loadingMore: false,
+      error: null,
+    }));
     void loadPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, enabled]);

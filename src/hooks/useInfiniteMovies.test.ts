@@ -117,6 +117,37 @@ describe('useInfiniteMovies', () => {
     expect(result.current.movies).toEqual([expect.objectContaining({ id: 99 })]);
   });
 
+  it('mantem a lista anterior enquanto a nova key carrega (busca ao digitar)', async () => {
+    let resolveB: (v: PagedResponse<Movie>) => void = () => {};
+    const fetcher = vi
+      .fn<(page: number) => Promise<PagedResponse<Movie>>>()
+      .mockImplementationOnce(() => Promise.resolve(makePage(1, [1, 2])))
+      .mockImplementationOnce(
+        () =>
+          new Promise<PagedResponse<Movie>>((r) => {
+            resolveB = r;
+          }),
+      );
+
+    const { result, rerender } = renderHook(({ key }) => useInfiniteMovies(fetcher, key), {
+      initialProps: { key: 'a' },
+    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.movies.map((m) => m.id)).toEqual([1, 2]);
+
+    rerender({ key: 'b' });
+
+    // Resultados do termo anterior seguem montados (a UI so os esmaece).
+    expect(result.current.loading).toBe(true);
+    expect(result.current.movies.map((m) => m.id)).toEqual([1, 2]);
+
+    await act(async () => {
+      resolveB(makePage(1, [9]));
+    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.movies.map((m) => m.id)).toEqual([9]);
+  });
+
   it('hasMore=false quando page alcanca totalPages', async () => {
     const fetcher = vi.fn().mockResolvedValue(makePage(1, [1], 1));
     const { result } = renderHook(() => useInfiniteMovies(fetcher, 'k'));
