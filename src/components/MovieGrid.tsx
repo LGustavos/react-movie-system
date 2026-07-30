@@ -10,10 +10,11 @@ interface MovieGridProps {
 export function MovieGrid({ movies, highlight, actionVariant }: MovieGridProps) {
   return (
     <div className="movie-grid">
-      {movies.map((movie) => (
+      {movies.map((movie, index) => (
         <MovieCard
           key={movie.id}
           movie={movie}
+          index={index}
           highlight={highlight}
           actionVariant={actionVariant}
         />

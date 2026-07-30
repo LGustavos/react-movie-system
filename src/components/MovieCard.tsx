@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useFavorites } from '@/contexts/FavoritesContext';
 import { buildImageUrl } from '@/services/tmdb';
 import type { FavoriteMovie, Movie } from '@/types/movie';
@@ -19,10 +20,22 @@ interface MovieCardProps {
    * "remove": lixeira no canto direito (usado na pagina de Favoritos).
    */
   actionVariant?: 'favorite' | 'remove';
+  /** Posicao no grid, usada para escalonar a animacao de entrada. */
+  index?: number;
 }
 
-export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: MovieCardProps) {
+/** Escalonamento da entrada: reinicia a cada pagina da API (20 itens). */
+const STAGGER_STEP_MS = 35;
+const STAGGER_PAGE_SIZE = 20;
+
+export function MovieCard({
+  movie,
+  highlight,
+  actionVariant = 'favorite',
+  index = 0,
+}: MovieCardProps) {
   const { isFavorite, toggleFavorite, removeFavorite } = useFavorites();
+  const [popping, setPopping] = useState(false);
   const favorited = isFavorite(movie.id);
   // w500: no mobile o card ocupa a linha toda, e w300 apareceria borrado.
   const poster = buildImageUrl(movie.poster_path, 'w500');
@@ -33,9 +46,11 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
     e.stopPropagation();
     if (actionVariant === 'remove') {
       removeFavorite(movie.id);
-    } else {
-      toggleFavorite(movie);
+      return;
     }
+    toggleFavorite(movie);
+    // So no clique: cards ja favoritados nao devem pulsar ao montar.
+    setPopping(true);
   };
 
   const actionAriaLabel =
@@ -46,7 +61,10 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
         : `Adicionar ${movie.title} aos favoritos`;
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-surface-800 shadow-card ring-1 ring-white/5 transition hover:ring-brand-500/50">
+    <article
+      className="group relative flex h-full animate-card-in flex-col overflow-hidden rounded-xl bg-surface-800 shadow-card ring-1 ring-white/5 transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/40 hover:ring-brand-500/50"
+      style={{ animationDelay: `${(index % STAGGER_PAGE_SIZE) * STAGGER_STEP_MS}ms` }}
+    >
       <Link
         href={`/movie/${movie.id}`}
         className="flex flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
@@ -103,7 +121,10 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
         ) : (
           <HeartIcon
             filled={favorited}
-            className={`h-4 w-4 ${favorited ? 'text-red-500' : 'text-white'}`}
+            onAnimationEnd={() => setPopping(false)}
+            className={`h-4 w-4 ${popping ? 'animate-pop' : ''} ${
+              favorited ? 'text-red-500' : 'text-white'
+            }`}
           />
         )}
       </button>
