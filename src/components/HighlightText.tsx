@@ -29,7 +29,7 @@ export function HighlightText({ text, highlight, className }: HighlightTextProps
     <span className={className}>
       {parts.map((part, i) =>
         part.match ? (
-          <mark key={i} className="rounded bg-accent-400/90 px-1 text-surface-950">
+          <mark key={i} className="rounded bg-accent-400 px-1 text-surface-950">
             {part.value}
           </mark>
         ) : (

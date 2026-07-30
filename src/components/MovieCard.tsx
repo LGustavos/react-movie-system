@@ -45,7 +45,7 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
         : `Adicionar ${movie.title} aos favoritos`;
 
   return (
-    <article className="group relative overflow-hidden rounded-xl bg-surface-800/80 shadow-card ring-1 ring-white/5 transition hover:ring-brand-500/50">
+    <article className="group relative overflow-hidden rounded-xl bg-surface-800 shadow-card ring-1 ring-white/5 transition hover:ring-brand-500/50">
       <Link
         href={`/movie/${movie.id}`}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
@@ -74,11 +74,13 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
           >
             <HighlightText text={movie.title} highlight={highlight} />
           </h3>
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="inline-flex items-center gap-1 rounded-full bg-accent-500/90 px-2 py-0.5 font-semibold text-surface-950">
+          <div className="flex items-center text-xs">
+            <span
+              className="inline-flex items-center rounded-full bg-accent-500 px-2 py-0.5 font-bold text-surface-950"
+              title={year ? `Nota TMDB - ${year}` : 'Nota TMDB'}
+            >
               {movie.vote_average.toFixed(1)}
             </span>
-            {year && <span>{year}</span>}
           </div>
         </div>
       </Link>
