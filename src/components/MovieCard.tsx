@@ -24,7 +24,8 @@ interface MovieCardProps {
 export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: MovieCardProps) {
   const { isFavorite, toggleFavorite, removeFavorite } = useFavorites();
   const favorited = isFavorite(movie.id);
-  const poster = buildImageUrl(movie.poster_path, 'w300');
+  // w500: no mobile o card ocupa a linha toda, e w300 apareceria borrado.
+  const poster = buildImageUrl(movie.poster_path, 'w500');
   const year = movie.release_date ? movie.release_date.slice(0, 4) : null;
 
   const handleActionClick = (e: React.MouseEvent) => {
@@ -45,10 +46,10 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
         : `Adicionar ${movie.title} aos favoritos`;
 
   return (
-    <article className="group relative overflow-hidden rounded-xl bg-surface-800 shadow-card ring-1 ring-white/5 transition hover:ring-brand-500/50">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-surface-800 shadow-card ring-1 ring-white/5 transition hover:ring-brand-500/50">
       <Link
         href={`/movie/${movie.id}`}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        className="flex flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
         aria-label={`Ver detalhes de ${movie.title}`}
       >
         <div className="relative aspect-[2/3] w-full bg-surface-700/60">
@@ -57,7 +58,7 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
               src={poster}
               alt={`Poster de ${movie.title}`}
               fill
-              sizes="(min-width: 1280px) 16vw, (min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+              sizes="(min-width: 1536px) 14vw, (min-width: 1280px) 16vw, (min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 480px) 50vw, 100vw"
               className="object-cover transition duration-300 group-hover:scale-[1.03]"
             />
           ) : (
@@ -67,14 +68,19 @@ export function MovieCard({ movie, highlight, actionVariant = 'favorite' }: Movi
           )}
         </div>
 
-        <div className="space-y-2 p-3">
+        <div className="flex flex-1 flex-col gap-2 p-3">
+          {/*
+           * Altura travada em exatamente 2 linhas (leading-5 x 2 = h-10): com
+           * min-height um titulo longo empurrava o badge e vazava do card.
+           * O titulo completo continua no atributo `title`.
+           */}
           <h3
-            className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-tight text-slate-100"
+            className="line-clamp-2 h-10 overflow-hidden break-words text-sm font-semibold leading-5 text-slate-100"
             title={movie.title}
           >
             <HighlightText text={movie.title} highlight={highlight} />
           </h3>
-          <div className="flex items-center text-xs">
+          <div className="mt-auto flex items-center text-xs">
             <span
               className="inline-flex items-center rounded-full bg-accent-500 px-2 py-0.5 font-bold text-surface-950"
               title={year ? `Nota TMDB - ${year}` : 'Nota TMDB'}

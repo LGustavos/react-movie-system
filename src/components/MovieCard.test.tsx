@@ -39,6 +39,13 @@ describe('MovieCard', () => {
     );
   });
 
+  it('expoe o titulo completo no atributo title (o card corta em 2 linhas)', () => {
+    const longTitle = 'Homem-Aranha: Todos os Caminhos Levam a Casa (Sem Volta para Casa)';
+    render(<MovieCard movie={{ ...movie, title: longTitle }} />, { wrapper });
+
+    expect(screen.getByRole('heading', { level: 3 })).toHaveAttribute('title', longTitle);
+  });
+
   it('alterna favorito ao clicar no botao de coracao', async () => {
     const user = userEvent.setup();
     render(
