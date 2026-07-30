@@ -61,28 +61,6 @@ export function SearchIcon(props: IconProps) {
   );
 }
 
-export function ClapperboardIcon(props: IconProps) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="m22 8-6 6" />
-      <path d="m21 3-3 3" />
-      <path d="M2 12h20" />
-      <path d="M2 6h13.5L18 3H2Z" />
-      <path d="M2 12v9h20v-9" />
-    </svg>
-  );
-}
-
 export function StarIcon(props: IconProps) {
   return (
     <svg

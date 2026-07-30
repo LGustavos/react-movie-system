@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { ClapperboardIcon } from './icons';
+import { ClapperboardIcon } from './ClapperboardIcon';
 
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -21,8 +21,8 @@ export function EmptyState({
     <div
       className={`flex flex-col items-center justify-center gap-4 py-16 text-center ${className}`}
     >
-      <div className="text-slate-500">
-        {icon ?? <ClapperboardIcon className="h-12 w-12" strokeWidth={1.5} />}
+      <div className="text-lilac-400">
+        {icon ?? <ClapperboardIcon className="h-14 w-14" aria-hidden />}
       </div>
       <div className="space-y-2">
         <h2 className="text-xl font-medium text-slate-400">{title}</h2>
