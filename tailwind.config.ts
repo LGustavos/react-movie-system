@@ -34,6 +34,40 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
+      /*
+       * Todas as animacoes mexem so em transform/opacity - propriedades que o
+       * browser compoe na GPU, sem recalcular layout a cada frame.
+       */
+      keyframes: {
+        aurora: {
+          '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
+          '50%': { transform: 'translate3d(4%, 6%, 0) scale(1.25)' },
+        },
+        'aurora-slow': {
+          '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1.15)' },
+          '50%': { transform: 'translate3d(-6%, -4%, 0) scale(1)' },
+        },
+        'card-in': {
+          from: { opacity: '0', transform: 'translateY(14px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        pop: {
+          '0%': { transform: 'scale(1)' },
+          '40%': { transform: 'scale(1.35)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
+      animation: {
+        aurora: 'aurora 26s ease-in-out infinite',
+        'aurora-slow': 'aurora-slow 34s ease-in-out infinite',
+        // `both` segura o opacity:0 durante o animation-delay do escalonamento.
+        'card-in': 'card-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        pop: 'pop 320ms ease-out',
+        shimmer: 'shimmer 1.6s infinite',
+      },
     },
   },
   plugins: [],

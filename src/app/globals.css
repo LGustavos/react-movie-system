@@ -19,6 +19,23 @@
 		-webkit-box-shadow: 0 0 0px 1000px #111827 inset;
 		caret-color: #f8fafc;
 	}
+
+	/*
+	 * Quem marcou "reduzir movimento" no sistema recebe a interface parada.
+	 * Neutraliza tudo de uma vez em vez de depender de cada componente lembrar.
+	 * A duracao minima (em vez de `none`) garante que o animationend ainda
+	 * dispare, entao estados presos a esse evento nao travam.
+	 */
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+	}
 }
 
 @layer components {
@@ -30,15 +47,31 @@
 		@apply grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7;
 	}
 
+	/* Placeholder de carregamento com um brilho varrendo a superficie. */
+	.skeleton {
+		@apply relative overflow-hidden bg-surface-800/70;
+	}
+
+	.skeleton::after {
+		@apply absolute inset-0 -translate-x-full animate-shimmer;
+		content: '';
+		background-image: linear-gradient(
+			90deg,
+			transparent,
+			rgba(255, 255, 255, 0.06),
+			transparent
+		);
+	}
+
 	.btn-primary {
-		@apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-card transition hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:opacity-60 disabled:cursor-not-allowed;
+		@apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-card transition active:scale-[0.97] hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:opacity-60 disabled:cursor-not-allowed;
 	}
 
 	.btn-danger {
-		@apply inline-flex items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow-card transition hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:opacity-60 disabled:cursor-not-allowed;
+		@apply inline-flex items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow-card transition active:scale-[0.97] hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:opacity-60 disabled:cursor-not-allowed;
 	}
 
 	.btn-outline-danger {
-		@apply inline-flex items-center justify-center gap-2 rounded-lg border border-red-500/70 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 transition hover:bg-red-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:opacity-60 disabled:cursor-not-allowed;
+		@apply inline-flex items-center justify-center gap-2 rounded-lg border border-red-500/70 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 transition active:scale-[0.97] hover:bg-red-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:opacity-60 disabled:cursor-not-allowed;
 	}
 }
