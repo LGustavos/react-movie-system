@@ -36,7 +36,7 @@ function SearchPageContent() {
     return (
       <EmptyState
         title="Digite algo para buscar"
-        description="Use a barra de busca no topo para encontrar filmes por titulo."
+        description="Use a barra de busca no topo para encontrar filmes por título."
         cta={{ label: 'Ver filmes populares', href: '/' }}
       />
     );
@@ -66,7 +66,7 @@ function SearchPageContent() {
       {!loading && !error && movies.length === 0 && (
         <EmptyState
           title="Sem resultados"
-          description={`Nao encontramos nenhum filme para "${query}". Tente outro termo.`}
+          description={`Não encontramos nenhum filme para "${query}". Tente outro termo.`}
           cta={{ label: 'Voltar para a home', href: '/' }}
         />
       )}

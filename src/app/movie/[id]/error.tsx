@@ -16,7 +16,7 @@ export default function MovieDetailsError({
 
   return (
     <ErrorState
-      title="Nao foi possivel carregar o filme"
+      title="Não foi possível carregar o filme"
       message={error.message || 'Ocorreu um erro inesperado ao buscar os detalhes.'}
       onRetry={reset}
     />

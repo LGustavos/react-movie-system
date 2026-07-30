@@ -7,7 +7,7 @@ import { fetchMovieDetailsServer, TmdbNotFoundError } from '@/lib/tmdbServer';
 import { buildImageUrl } from '@/services/tmdb';
 
 function formatDate(date: string): string {
-  if (!date) return 'Nao informada';
+  if (!date) return 'Não informada';
   const parsed = new Date(date);
   if (Number.isNaN(parsed.getTime())) return date;
   return parsed.toLocaleDateString('pt-BR', {
@@ -69,7 +69,7 @@ export default async function MovieDetailsPage({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-sm text-slate-500">
-            Imagem indisponivel
+            Imagem indisponível
           </div>
         )}
       </div>
@@ -81,11 +81,11 @@ export default async function MovieDetailsPage({
             <p className="text-sm italic text-slate-400">&ldquo;{data.tagline}&rdquo;</p>
           )}
           {data.genres.length > 0 && (
-            <ul className="flex flex-wrap gap-2" aria-label="Generos">
+            <ul className="flex flex-wrap gap-2" aria-label="Gêneros">
               {data.genres.map((g) => (
                 <li
                   key={g.id}
-                  className="rounded-full bg-brand-500/90 px-3 py-1 text-xs font-semibold text-white"
+                  className="rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white"
                 >
                   {g.name}
                 </li>
@@ -94,20 +94,20 @@ export default async function MovieDetailsPage({
           )}
         </header>
 
-        <dl className="grid grid-cols-1 gap-3 text-sm">
-          <div>
-            <dt className="font-semibold text-slate-100">Data de lancamento:</dt>
+        <dl className="space-y-1.5 text-sm">
+          <div className="flex flex-wrap items-center gap-x-2">
+            <dt className="font-semibold text-slate-100">Data de lançamento:</dt>
             <dd className="text-slate-300">{formatDate(data.release_date)}</dd>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-x-2">
             <dt className="font-semibold text-slate-100">Nota TMDB:</dt>
             <dd>
-              <span className="inline-flex items-center gap-1 rounded-full bg-accent-500/90 px-2.5 py-0.5 text-xs font-semibold text-surface-950">
+              <span
+                className="inline-flex items-center gap-1 rounded-full bg-accent-500 px-2.5 py-0.5 text-xs font-bold text-surface-950"
+                title={`${data.vote_count.toLocaleString('pt-BR')} votos`}
+              >
                 <StarIcon className="h-3 w-3" />
                 {data.vote_average.toFixed(1)}
-              </span>
-              <span className="ml-2 text-xs text-slate-400">
-                ({data.vote_count.toLocaleString('pt-BR')} votos)
               </span>
             </dd>
           </div>
@@ -116,7 +116,7 @@ export default async function MovieDetailsPage({
         <section>
           <h2 className="mb-1 text-base font-semibold text-slate-100">Sinopse</h2>
           <p className="text-sm leading-relaxed text-slate-300">
-            {data.overview || 'Sinopse nao disponivel em portugues.'}
+            {data.overview || 'Sinopse não disponível em português.'}
           </p>
         </section>
 

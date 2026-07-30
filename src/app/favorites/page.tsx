@@ -9,8 +9,8 @@ import type { FavoriteMovie } from '@/types/movie';
 type SortOption = 'title-asc' | 'title-desc' | 'rating-desc';
 
 const SORT_LABELS: Record<SortOption, string> = {
-  'title-asc': 'Titulo (A-Z)',
-  'title-desc': 'Titulo (Z-A)',
+  'title-asc': 'Título (A-Z)',
+  'title-desc': 'Título (Z-A)',
   'rating-desc': 'Nota (maior-menor)',
 };
 
@@ -65,7 +65,7 @@ export default function FavoritesPage() {
             id="favorites-sort"
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="rounded-md border border-white/10 bg-surface-900 px-3 py-1.5 text-sm text-slate-100 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+            className="rounded-md border border-white/10 bg-surface-800 px-3 py-1.5 text-sm text-slate-100 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
           >
             {(Object.keys(SORT_LABELS) as SortOption[]).map((key) => (
               <option key={key} value={key}>

@@ -21,13 +21,9 @@ export default function HomePage() {
   });
 
   return (
-    <section className="space-y-6">
-      <header className="flex items-end justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl">Filmes Populares</h1>
-          <p className="text-sm text-slate-400">Descubra o que esta em alta agora no TMDB.</p>
-        </div>
-      </header>
+    <section>
+      {/* O design de referencia leva direto ao grid; o titulo fica so para leitores de tela. */}
+      <h1 className="sr-only">Filmes Populares</h1>
 
       {loading && <MovieGridSkeleton />}
 
@@ -35,7 +31,7 @@ export default function HomePage() {
         <ErrorState
           message={error}
           onRetry={retry}
-          title="Nao foi possivel carregar os filmes populares"
+          title="Não foi possível carregar os filmes populares"
         />
       )}
 
@@ -47,7 +43,7 @@ export default function HomePage() {
 
       {!hasMore && !loading && movies.length > 0 && (
         <p className="pb-6 text-center text-xs text-slate-500">
-          Voce chegou ao fim da lista popular.
+          Você chegou ao fim da lista popular.
         </p>
       )}
     </section>
