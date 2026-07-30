@@ -1,4 +1,5 @@
 import 'server-only';
+import type { MovieDetails } from '@/types/movie';
 
 /**
  * Configuracao TMDB acessada APENAS no servidor (route handlers e RSC).
@@ -14,4 +15,30 @@ export function assertTmdbToken(): void {
       'TMDB_TOKEN nao configurado. Copie .env.example para .env.local e preencha o token.',
     );
   }
+}
+
+export class TmdbNotFoundError extends Error {
+  constructor(message = 'Filme nao encontrado.') {
+    super(message);
+    this.name = 'TmdbNotFoundError';
+  }
+}
+
+/**
+ * Busca detalhes de um filme direto no TMDB (uso em Server Components).
+ * Lanca TmdbNotFoundError em 404 para o caller chamar notFound().
+ */
+export async function fetchMovieDetailsServer(id: string | number): Promise<MovieDetails> {
+  assertTmdbToken();
+  const url = `${TMDB_API_URL}/movie/${id}?language=${encodeURIComponent(TMDB_LANGUAGE)}`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${TMDB_TOKEN}`,
+      Accept: 'application/json',
+    },
+    next: { revalidate: 60 },
+  });
+  if (res.status === 404) throw new TmdbNotFoundError();
+  if (!res.ok) throw new Error(`TMDB respondeu ${res.status}`);
+  return (await res.json()) as MovieDetails;
 }

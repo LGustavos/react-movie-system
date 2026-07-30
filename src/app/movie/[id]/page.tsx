@@ -1,12 +1,9 @@
-'use client';
-
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { ErrorState } from '@/components/ErrorState';
-import { HeartIcon, StarIcon } from '@/components/icons';
-import { Loader } from '@/components/Loader';
-import { useFavorites } from '@/contexts/FavoritesContext';
-import { useMovieDetails } from '@/hooks/useMovieDetails';
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import { FavoriteButton } from '@/components/FavoriteButton';
+import { StarIcon } from '@/components/icons';
+import { fetchMovieDetailsServer, TmdbNotFoundError } from '@/lib/tmdbServer';
 import { buildImageUrl } from '@/services/tmdb';
 
 function formatDate(date: string): string {
@@ -20,30 +17,43 @@ function formatDate(date: string): string {
   });
 }
 
-export default function MovieDetailsPage() {
-  const params = useParams<{ id: string }>();
-  const id = params.id;
-  const { data, loading, error, retry } = useMovieDetails(id);
-  const { isFavorite, toggleFavorite } = useFavorites();
-
-  if (loading) {
-    return <Loader label="Carregando detalhes do filme..." />;
+async function loadMovie(id: string) {
+  try {
+    return await fetchMovieDetailsServer(id);
+  } catch (err) {
+    if (err instanceof TmdbNotFoundError) notFound();
+    throw err;
   }
+}
 
-  if (error || !data) {
-    return (
-      <ErrorState
-        title="Nao foi possivel carregar o filme"
-        message={error ?? 'Filme nao encontrado.'}
-        onRetry={retry}
-      />
-    );
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const data = await fetchMovieDetailsServer(id);
+    return {
+      title: `${data.title} - MovieDB`,
+      description: data.overview || data.tagline || `Detalhes do filme ${data.title}.`,
+    };
+  } catch {
+    return { title: 'Filme - MovieDB' };
   }
+}
+
+export default async function MovieDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const data = await loadMovie(id);
 
   const backdrop = buildImageUrl(data.backdrop_path, 'original');
   const posterFallback = buildImageUrl(data.poster_path, 'w500');
   const image = backdrop ?? posterFallback;
-  const favorited = isFavorite(data.id);
 
   return (
     <article className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
@@ -56,7 +66,6 @@ export default function MovieDetailsPage() {
             sizes="(min-width: 1024px) 55vw, 100vw"
             className="object-cover"
             priority
-            unoptimized
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-sm text-slate-500">
@@ -111,19 +120,15 @@ export default function MovieDetailsPage() {
           </p>
         </section>
 
-        <button
-          type="button"
-          onClick={() => toggleFavorite(data)}
-          aria-pressed={favorited}
-          className={
-            favorited
-              ? 'btn-danger'
-              : 'btn-primary'
-          }
-        >
-          <HeartIcon filled={favorited} className="h-4 w-4" />
-          {favorited ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'}
-        </button>
+        <FavoriteButton
+          movie={{
+            id: data.id,
+            title: data.title,
+            poster_path: data.poster_path,
+            vote_average: data.vote_average,
+            release_date: data.release_date,
+          }}
+        />
       </div>
     </article>
   );
