@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { BackBreadcrumb } from '@/components/BackBreadcrumb';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { StarIcon } from '@/components/icons';
 import { fetchMovieDetailsServer, TmdbNotFoundError } from '@/lib/tmdbServer';
@@ -56,80 +57,85 @@ export default async function MovieDetailsPage({
   const image = backdrop ?? posterFallback;
 
   return (
-    <article className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface-800/60 shadow-card ring-1 ring-white/5">
-        {image ? (
-          <Image
-            src={image}
-            alt={`Imagem de ${data.title}`}
-            fill
-            sizes="(min-width: 1024px) 55vw, 100vw"
-            className="object-cover"
-            priority
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-slate-500">
-            Imagem indisponível
-          </div>
-        )}
-      </div>
+    // Largura propria: o container da pagina e largo demais para texto corrido.
+    <div className="mx-auto max-w-7xl">
+      <BackBreadcrumb current={data.title} />
 
-      <div className="space-y-5">
-        <header className="space-y-3">
-          <h1 className="text-3xl font-bold text-slate-100 sm:text-4xl">{data.title}</h1>
-          {data.tagline && (
-            <p className="text-sm italic text-slate-400">&ldquo;{data.tagline}&rdquo;</p>
+      <article className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start">
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface-800/60 shadow-card ring-1 ring-white/5">
+          {image ? (
+            <Image
+              src={image}
+              alt={`Imagem de ${data.title}`}
+              fill
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-sm text-slate-500">
+              Imagem indisponível
+            </div>
           )}
-          {data.genres.length > 0 && (
-            <ul className="flex flex-wrap gap-2" aria-label="Gêneros">
-              {data.genres.map((g) => (
-                <li
-                  key={g.id}
-                  className="rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white"
+        </div>
+
+        <div className="space-y-5">
+          <header className="space-y-3">
+            <h1 className="text-3xl font-bold text-slate-100 sm:text-4xl">{data.title}</h1>
+            {data.tagline && (
+              <p className="text-sm italic text-slate-400">&ldquo;{data.tagline}&rdquo;</p>
+            )}
+            {data.genres.length > 0 && (
+              <ul className="flex flex-wrap gap-2" aria-label="Gêneros">
+                {data.genres.map((g) => (
+                  <li
+                    key={g.id}
+                    className="rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white"
+                  >
+                    {g.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </header>
+
+          <dl className="space-y-1.5 text-sm">
+            <div className="flex flex-wrap items-center gap-x-2">
+              <dt className="font-semibold text-slate-100">Data de lançamento:</dt>
+              <dd className="text-slate-300">{formatDate(data.release_date)}</dd>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-2">
+              <dt className="font-semibold text-slate-100">Nota TMDB:</dt>
+              <dd>
+                <span
+                  className="inline-flex items-center gap-1 rounded-full bg-accent-500 px-2.5 py-0.5 text-xs font-bold text-surface-950"
+                  title={`${data.vote_count.toLocaleString('pt-BR')} votos`}
                 >
-                  {g.name}
-                </li>
-              ))}
-            </ul>
-          )}
-        </header>
+                  <StarIcon className="h-3 w-3" />
+                  {data.vote_average.toFixed(1)}
+                </span>
+              </dd>
+            </div>
+          </dl>
 
-        <dl className="space-y-1.5 text-sm">
-          <div className="flex flex-wrap items-center gap-x-2">
-            <dt className="font-semibold text-slate-100">Data de lançamento:</dt>
-            <dd className="text-slate-300">{formatDate(data.release_date)}</dd>
-          </div>
-          <div className="flex flex-wrap items-center gap-x-2">
-            <dt className="font-semibold text-slate-100">Nota TMDB:</dt>
-            <dd>
-              <span
-                className="inline-flex items-center gap-1 rounded-full bg-accent-500 px-2.5 py-0.5 text-xs font-bold text-surface-950"
-                title={`${data.vote_count.toLocaleString('pt-BR')} votos`}
-              >
-                <StarIcon className="h-3 w-3" />
-                {data.vote_average.toFixed(1)}
-              </span>
-            </dd>
-          </div>
-        </dl>
+          <section>
+            <h2 className="mb-1 text-base font-semibold text-slate-100">Sinopse</h2>
+            <p className="text-sm leading-relaxed text-slate-300">
+              {data.overview || 'Sinopse não disponível em português.'}
+            </p>
+          </section>
 
-        <section>
-          <h2 className="mb-1 text-base font-semibold text-slate-100">Sinopse</h2>
-          <p className="text-sm leading-relaxed text-slate-300">
-            {data.overview || 'Sinopse não disponível em português.'}
-          </p>
-        </section>
-
-        <FavoriteButton
-          movie={{
-            id: data.id,
-            title: data.title,
-            poster_path: data.poster_path,
-            vote_average: data.vote_average,
-            release_date: data.release_date,
-          }}
-        />
-      </div>
-    </article>
+          <FavoriteButton
+            movie={{
+              id: data.id,
+              title: data.title,
+              poster_path: data.poster_path,
+              vote_average: data.vote_average,
+              release_date: data.release_date,
+            }}
+          />
+        </div>
+      </article>
+    </div>
   );
 }
