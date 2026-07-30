@@ -17,12 +17,12 @@ O TMDB exige um Bearer Token que **nao deve ir para o bundle do cliente**. A apl
 
 ## Paginas
 
-| Rota            | O que faz                                                                     |
-| --------------- | ----------------------------------------------------------------------------- |
-| `/`             | Home com grid infinito dos filmes populares                                   |
-| `/movie/:id`    | Detalhes do filme (imagem, generos, sinopse, favoritar)                       |
-| `/favorites`    | Favoritos com ordenacao (titulo A-Z/Z-A, nota) e estado vazio                 |
-| `/search?q=...` | Busca com infinite scroll e destaque do termo pesquisado nos titulos dos cards |
+| Rota            | Renderizacao       | O que faz                                                                       |
+| --------------- | ------------------ | ------------------------------------------------------------------------------- |
+| `/`             | Client (grid live) | Home com grid infinito dos filmes populares                                     |
+| `/movie/:id`    | **SSR**            | Detalhes do filme buscados no servidor (HTML pronto). Botao favoritar em client |
+| `/favorites`    | Client             | Favoritos com ordenacao (titulo A-Z/Z-A, nota) e estado vazio                   |
+| `/search?q=...` | Client             | Busca com infinite scroll e destaque do termo pesquisado nos titulos dos cards  |
 
 ## Estrutura
 
@@ -33,15 +33,18 @@ src/
 │   ├── page.tsx             # Home
 │   ├── favorites/page.tsx
 │   ├── search/page.tsx
-│   ├── movie/[id]/page.tsx
+│   ├── movie/[id]/
+│   │   ├── page.tsx         # Server Component: fetch server-side + generateMetadata
+│   │   ├── loading.tsx      # Skeleton nativo do App Router
+│   │   └── error.tsx        # Boundary de erro
 │   ├── not-found.tsx
 │   ├── globals.css
-│   └── api/tmdb/[...path]/route.ts   # Proxy TMDB (server-only)
-├── components/              # UI reutilizavel (Header, MovieCard, Grid, EmptyState, ...)
+│   └── api/tmdb/[...path]/route.ts   # Proxy TMDB (server-only, usado pelas paginas client)
+├── components/              # UI reutilizavel (Header, MovieCard, MovieGrid, EmptyState, FavoriteButton, ...)
 ├── contexts/                # FavoritesContext (Context API + localStorage)
-├── hooks/                   # useInfiniteMovies, useInfiniteScrollAnchor, useMovieDetails, useDebounce
+├── hooks/                   # useInfiniteMovies, useInfiniteScrollAnchor
 ├── services/                # tmdb.ts (cliente Axios que fala com o proxy interno)
-├── lib/                     # tmdbServer.ts (config server-only)
+├── lib/                     # tmdbServer.ts (config + fetch server-only para RSC)
 └── types/                   # DTOs TMDB
 ```
 
@@ -98,12 +101,14 @@ Todas ficam em `.env.local` (ignorado pelo git). Detalhado em `.env.example`.
 
 ## Testes
 
-Cobertura de unidade nas partes criticas de logica:
+Cobertura de unidade nas partes criticas de logica (25 testes / 6 suites):
 
 - `FavoritesContext` -> add/remove/toggle/persistencia/hidratacao (localStorage)
 - `HighlightText` -> destaque case-insensitive, multiplas ocorrencias, escape de regex
 - `MovieCard` -> render, alternar favorito, variante "remove", highlight do termo
 - `Header` -> submit da busca redireciona para `/search?q=...`
+- `useInfiniteMovies` -> primeira pagina, loadMore + dedupe, error/retry, staleness quando key muda com request em voo
+- `FavoritesPage` -> estado vazio, hidratacao do localStorage, ordenacao, variant remove
 
 ```bash
 npm test
@@ -112,7 +117,10 @@ npm test
 ## Decisoes de arquitetura
 
 - **Proxy TMDB no servidor** mantem o token seguro e permite cache do Next (`revalidate: 60s`).
+- **SSR na pagina de detalhes** (`/movie/[id]`) - o RSC busca o filme direto do TMDB (via `fetchMovieDetailsServer` em `lib/tmdbServer.ts`), renderiza o HTML pronto (bom pra SEO/LCP) e delega apenas o botao de favoritar para um pequeno client component. `loading.tsx` e `error.tsx` sao boundaries nativos do App Router.
 - **Context API** foi suficiente para o unico estado global (favoritos). Redux seria over-engineering aqui.
+- **`isFavorite` O(1) via `Set`** - `favoriteIds` e derivado com `useMemo`, evitando `favorites.some(...)` em cada card da grid.
+- **`requestId` como unica guarda de staleness** no `useInfiniteMovies` (nao ha guard `inFlight` redundante) - se a `key` muda com uma request em voo, a resposta antiga e simplesmente descartada e a nova prossegue imediatamente.
 - **Infinite scroll via IntersectionObserver** encapsulado em `useInfiniteScrollAnchor`, dessa forma o hook `useInfiniteMovies` fica agnostico de UI e reusavel na Home e na Busca.
 - **`FavoriteMovie` reduzido** (id, title, poster_path, vote_average, release_date) evita salvar payload completo do TMDB no localStorage.
 - **Hidratacao explicita** (`hydrated`) evita "flash" de estado vazio antes do localStorage carregar no cliente.
