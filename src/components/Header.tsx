@@ -39,12 +39,12 @@ export function Header() {
       <div className="container-page flex h-16 items-center gap-4">
         <Link
           href="/"
-          className="flex items-center gap-2 text-brand-500 transition hover:opacity-90"
+          className="flex items-center gap-2 text-accent-500 transition hover:opacity-90"
           aria-label="MovieDB - Ir para a home"
         >
           <ClapperboardIcon className="h-6 w-6" />
           <span className="text-lg font-bold tracking-tight text-slate-100">
-            Movie<span className="text-brand-500">DB</span>
+            Movie<span className="text-accent-500">DB</span>
           </span>
         </Link>
 

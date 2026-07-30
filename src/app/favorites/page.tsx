@@ -55,15 +55,8 @@ export default function FavoritesPage() {
 
   return (
     <section className="space-y-6">
-      <header className="space-y-4 sm:flex sm:items-end sm:justify-between sm:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl">Meus Filmes Favoritos</h1>
-          <p className="text-sm text-slate-400">
-            {favorites.length} filme{favorites.length === 1 ? '' : 's'} salvo
-            {favorites.length === 1 ? '' : 's'} localmente no navegador.
-          </p>
-        </div>
-
+      <header className="space-y-3">
+        <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl">Meus Filmes Favoritos</h1>
         <div className="flex items-center gap-2">
           <label htmlFor="favorites-sort" className="text-sm text-slate-400">
             Ordenar por:
