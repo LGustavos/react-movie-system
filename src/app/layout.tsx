@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: '%s - MovieDB',
   },
   description:
-    'Explore filmes populares, busque titulos e organize sua lista de favoritos com dados do TMDB.',
+    'Explore filmes populares, busque títulos e organize sua lista de favoritos com dados do TMDB.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
