@@ -57,7 +57,7 @@ export default function FavoritesPage() {
     <section className="space-y-6">
       <header className="space-y-3">
         <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl">Meus Filmes Favoritos</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <label htmlFor="favorites-sort" className="text-sm text-slate-400">
             Ordenar por:
           </label>

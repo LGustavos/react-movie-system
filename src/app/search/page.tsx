@@ -45,7 +45,7 @@ function SearchPageContent() {
   return (
     <section className="space-y-6">
       <header className="space-y-1">
-        <h1 className="text-2xl font-bold text-slate-100 sm:text-3xl">
+        <h1 className="break-words text-2xl font-bold text-slate-100 sm:text-3xl">
           Resultados para: <span className="text-accent-400">&ldquo;{query}&rdquo;</span>
         </h1>
         {!loading && !error && (
@@ -57,7 +57,7 @@ function SearchPageContent() {
         )}
       </header>
 
-      {loading && <MovieGridSkeleton />}
+      {loading && movies.length === 0 && <MovieGridSkeleton />}
 
       {!loading && error && (
         <ErrorState message={error} onRetry={retry} title="Erro ao buscar filmes" />
@@ -71,8 +71,13 @@ function SearchPageContent() {
         />
       )}
 
-      {!loading && !error && movies.length > 0 && (
-        <MovieGrid movies={movies} highlight={query} />
+      {!error && movies.length > 0 && (
+        <div
+          aria-busy={loading}
+          className={`transition-opacity duration-200 ${loading ? 'opacity-40' : 'opacity-100'}`}
+        >
+          <MovieGrid movies={movies} highlight={query} />
+        </div>
       )}
 
       <div ref={anchorRef} aria-hidden="true" className="h-8" />
