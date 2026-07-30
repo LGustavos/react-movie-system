@@ -43,9 +43,7 @@ export function Header() {
           aria-label="MovieDB - Ir para a home"
         >
           <ClapperboardIcon className="h-6 w-6" />
-          <span className="text-lg font-bold tracking-tight text-slate-100">
-            Movie<span className="text-accent-500">DB</span>
-          </span>
+          <span className="text-lg font-bold tracking-tight">MovieDB</span>
         </Link>
 
         <form
@@ -66,7 +64,7 @@ export function Header() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar filmes..."
               autoComplete="off"
-              className="w-full rounded-full border border-white/10 bg-surface-900/80 py-2 pl-9 pr-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="w-full rounded-full border border-white/10 bg-surface-800 py-2 pl-9 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40"
             />
           </div>
         </form>

@@ -21,12 +21,12 @@ export function EmptyState({
     <div
       className={`flex flex-col items-center justify-center gap-4 py-16 text-center ${className}`}
     >
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-500">
-        {icon ?? <ClapperboardIcon className="h-8 w-8" />}
+      <div className="text-slate-500">
+        {icon ?? <ClapperboardIcon className="h-12 w-12" strokeWidth={1.5} />}
       </div>
-      <div className="space-y-1">
-        <h2 className="text-xl font-semibold text-slate-100">{title}</h2>
-        {description && <p className="max-w-md text-sm text-slate-400">{description}</p>}
+      <div className="space-y-2">
+        <h2 className="text-xl font-medium text-slate-400">{title}</h2>
+        {description && <p className="max-w-md text-sm text-slate-500">{description}</p>}
       </div>
       {cta && (
         <Link href={cta.href} className="btn-primary">
